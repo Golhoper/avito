@@ -1,0 +1,37 @@
+{% extends 'user/index.html' %}
+
+{% block head %}
+    <title>Регистрация</title>
+{% endblock %}
+
+{% block content %}
+    <body class="text-center">
+        <form class="form-signin" method="post">
+        {% csrf_token %}
+            <h1 class="h3 mb-3 font-weight-normal">Регистрация</h1>
+
+            <input class="form-control" placeholder="Имя" name="first_name">
+            <input class="form-control" placeholder="Фамилия" name="last_name">
+            <input class="form-control" placeholder="Придумайте логин" name="login">
+            {% if login_ans == 'busy' %}
+                <i class="far fa-times-circle" ></i>
+            {% elif login_ans == 'free' %}
+                <i class="far fa-check-circle"></i>
+            {% else %}
+                <i class="far fa-question-circle"></i>
+            {% endif %}
+
+            <input class="form-control" placeholder="Придумайте пароль" name="password">
+            <input class="form-control" placeholder="Повторите пароль" name="password_r">
+            <input class="form-control" placeholder="Напишите электронную потчу" name="email">
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+
+            <p class="mt-5 mb-3 text-muted">© 2017-2018</p>
+        </form>
+    </body>
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}
