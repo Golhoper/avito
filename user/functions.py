@@ -21,10 +21,7 @@ def get_email(email):
             email_ans = "correct"
     except:
         email_ans = "incorrect"
-    # if user:
-    #     email_ans = "incorrect"
-    # else:
-    #     email_ans = "correct"
+
     return email_ans
 
 
@@ -34,3 +31,30 @@ def get_password(password, password_r):
     else:
         password_ans = "equal"
     return password_ans
+
+
+def empty_log_pasw(login, password):
+    if login != '':
+        login_ans = "filled"
+    else:
+        login_ans = "empty"
+
+    if password != '':
+        password_ans = "filled"
+    else:
+        password_ans = "empty"
+
+    content = {
+        "login": login_ans,
+        "password": password_ans,
+    }
+
+    return content
+
+
+def error_log_pasw():
+    content = {
+        "login": "unknown",
+        "password": "unknown",
+    }
+    return content

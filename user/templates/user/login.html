@@ -1,0 +1,29 @@
+{% extends 'user/index.html' %}
+{% load staticfiles %}
+
+{% block head %}
+    <title>Регистрация</title>
+{% endblock %}
+
+{% block content %}
+    <body class="text-center">
+        <form class="form-signin" method="post">
+        {% csrf_token %}
+            <h1 class="h3 mb-3 font-weight-normal">Войдите</h1>
+
+            <input class="form-control" placeholder="Впишите логин" name="login" id="login">
+            <div id="logincheck"></div>
+
+            <input class="form-control" placeholder="Впишите пароль" name="password" id="password">
+            <div id="passwordcheck"></div>
+
+        </form>
+        <div class="col-2">
+            <button class="btn btn-lg btn-primary btn-block" id="check_name_button">ajax</button>
+        </div>
+    </body>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'js/login.js' %}"></script>
+{% endblock %}

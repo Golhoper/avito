@@ -1,6 +1,6 @@
 from Libraries import *
 from url_names import Names
-from user.functions import get_login, get_email, get_password
+from user.functions import get_login, get_email, get_password, empty_log_pasw, error_log_pasw
 
 
 def reg_user(request):
@@ -29,8 +29,35 @@ def reg_check(request):
 
             return HttpResponse(json.dumps(content), content_type="application/json")
         else:
-            print("here")
-            pass
+            User.objects.create_user(username=login, email=email, password=password,
+                                     first_name=first_name, last_name=last_name,
+                                     is_active=1, is_superuser=0, is_staff=0)
+            group = Group.objects.get(name='user')
+            User.objects.get(username=login).groups.add(group)
+            return render(request, Names.login)
 
-    else:
-        return HttpResponse("None", content_type="text/html")
+
+def log_user(request):
+    return render(request, Names.login)
+
+
+def log_check(request):
+    if request.method == "GET":
+        login = request.GET.get("login", '')
+        password = request.GET.get("password", '')
+
+        if login != '' and password != '':
+            user = authenticate(username=login, password=password)
+
+            if user is not None:
+                group = User.objects.get(username=login).groups.get()
+                if user.is_active == 1 and str(group) == "user":
+                    login(request, user)
+                    return render(request, Names.main)
+            else:
+                content = error_log_pasw()
+                return HttpResponse(json.dumps(content), content_type="application/json")
+        else:
+            print(1)
+            content = empty_log_pasw(login, password)
+            return HttpResponse(json.dumps(content), content_type="application/json")
