@@ -11,29 +11,24 @@
         {% csrf_token %}
             <h1 class="h3 mb-3 font-weight-normal">Регистрация</h1>
 
-            <input class="form-control" placeholder="Имя" name="first_name">
-            <input class="form-control" placeholder="Фамилия" name="last_name">
-            <input class="form-control" placeholder="Придумайте логин" name="login" id="log">
-            <div id="demo">ezpzlemonsqeezy</div>
-            {% if login_ans == 'busy' %}
+            <input class="form-control" placeholder="Имя" name="first_name" id="first_name">
+            <input class="form-control" placeholder="Фамилия" name="last_name" id="last_name">
+            <input class="form-control" placeholder="Придумайте логин" name="login" id="login">
+            <div id="logincheck"></div>
 
-                <i class="far fa-times-circle" ></i>
-            {% elif login_ans == 'free' %}
-                <i class="far fa-check-circle"></i>
-            {% else %}
-                <i class="far fa-question-circle"></i>
-            {% endif %}
-
-            <input class="form-control" placeholder="Придумайте пароль" name="password">
-            <input class="form-control" placeholder="Повторите пароль" name="password_r">
-            <input class="form-control" placeholder="Напишите электронную потчу" name="email">
-
-            <button class="btn btn-lg btn-primary btn-block" >Submit</button>
-
+            <input class="form-control" placeholder="Придумайте пароль" name="password" id="password">
+            <input class="form-control" placeholder="Повторите пароль" name="password_r" id="password_r">
+            <div id="passwordcheck"></div>
+            <input class="form-control" placeholder="Напишите электронную потчу" name="email" id="email">
+            <div id="emailcheck"></div>
+{#            <button class="btn btn-lg btn-primary btn-block" >Submit</button>#}
             <p class="mt-5 mb-3 text-muted">© 2017-2018</p>
         </form>
-        <button class="btn btn-lg btn-primary btn-block" id="check_name_button">ajax</button>
+
     </body>
+        <div class="col-2">
+            <button class="btn btn-lg btn-primary btn-block" id="check_name_button">ajax</button>
+        </div>
 {% endblock %}
 
 {% block javascript %}
