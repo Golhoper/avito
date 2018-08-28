@@ -13,7 +13,12 @@ $("#check_name_button").click(function () {
         dataType: "text",
         cache: false,
         success: function (omg) {
-            var ggwp = JSON.parse(omg);
+            if (ggwp.login == "back to login") {
+                head = "http://"
+                host = document.location.host
+                go_to = "/user/login/"
+                document.location.href = head + host + go_to;
+            }
             if (ggwp.login == "free") {
                 document.getElementById("logincheck").innerHTML = "<i class=\"far fa-check-circle\"></i>";
             }

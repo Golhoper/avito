@@ -20,6 +20,8 @@ def reg_check(request):
         email_ans = get_email(email)
         password_ans = get_password(password, password_r)
 
+        print(login_ans, email_ans, password_ans)
+
         if login_ans != "free" or email_ans == "incorrect" or password_ans == "not equal":
             content = {
                 "login": login_ans,
@@ -34,7 +36,11 @@ def reg_check(request):
                                      is_active=1, is_superuser=0, is_staff=0)
             group = Group.objects.get(name='user')
             User.objects.get(username=login).groups.add(group)
-            return render(request, Names.login)
+            print(1)
+            content = {
+                "login": "back to login",
+            }
+            return HttpResponse(json.dumps(content), content_type="application/json")
 
 
 def log_user(request):
@@ -43,21 +49,30 @@ def log_user(request):
 
 def log_check(request):
     if request.method == "GET":
-        login = request.GET.get("login", '')
+        login_c = request.GET.get("login", '')
         password = request.GET.get("password", '')
 
         if login != '' and password != '':
-            user = authenticate(username=login, password=password)
+            user = authenticate(username=login_c, password=password)
 
             if user is not None:
-                group = User.objects.get(username=login).groups.get()
+                group = User.objects.get(username=login_c).groups.get()
                 if user.is_active == 1 and str(group) == "user":
                     login(request, user)
-                    return render(request, Names.main)
+                    content = {"login": "go to profile"}
+                    return HttpResponse(json.dumps(content), content_type="application/json")
             else:
                 content = error_log_pasw()
                 return HttpResponse(json.dumps(content), content_type="application/json")
         else:
-            print(1)
             content = empty_log_pasw(login, password)
             return HttpResponse(json.dumps(content), content_type="application/json")
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
+
+
+def profile_user(request):
+    return render (request, Names.profile_user)

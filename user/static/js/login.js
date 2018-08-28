@@ -9,8 +9,13 @@ $("#check_name_button").click(function () {
         dataType: "text",
         cache: false,
         success: function (omg) {
-            console.log(omg);
             var ggwp = JSON.parse(omg);
+            if (ggwp.login == "go to profile") {
+                head = "http://";
+                host = document.location.host;
+                go_to = "/user/profile/";
+                document.location.href = head + host + go_to;
+            }
             if (ggwp.login == "empty") {
                 document.getElementById("logincheck").innerHTML = "<div id=\"logincheck\"> Пусто </div></i>";
             }

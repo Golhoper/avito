@@ -18,9 +18,9 @@ def get_email(email):
     try:
         user = User.objects.get(email=email)
         if user:
-            email_ans = "correct"
+            email_ans = "incorrect"
     except:
-        email_ans = "incorrect"
+        email_ans = "correct"
 
     return email_ans
 
