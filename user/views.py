@@ -1,12 +1,13 @@
 from Libraries import *
 from url_names import Names
-from user.functions import get_login, get_email, get_password, empty_log_pasw, error_log_pasw
+from user.functions import *
+from user.models import AdditionalUserInfo
 
 
 def reg_user(request):
     return render(request, Names.registration)
 
-
+#ajax
 def reg_check(request):
     if request.method == "GET":
         login = request.GET.get("login", '')
@@ -19,8 +20,6 @@ def reg_check(request):
         login_ans = get_login(login)
         email_ans = get_email(email)
         password_ans = get_password(password, password_r)
-
-        print(login_ans, email_ans, password_ans)
 
         if login_ans != "free" or email_ans == "incorrect" or password_ans == "not equal":
             content = {
@@ -36,7 +35,6 @@ def reg_check(request):
                                      is_active=1, is_superuser=0, is_staff=0)
             group = Group.objects.get(name='user')
             User.objects.get(username=login).groups.add(group)
-            print(1)
             content = {
                 "login": "back to login",
             }
@@ -46,7 +44,7 @@ def reg_check(request):
 def log_user(request):
     return render(request, Names.login)
 
-
+#ajax
 def log_check(request):
     if request.method == "GET":
         login_c = request.GET.get("login", '')
@@ -75,4 +73,70 @@ def logout_user(request):
 
 
 def profile_user(request):
-    return render (request, Names.profile_user)
+    user = User.objects.get(username=request.user)
+    ad = AdditionalUserInfo.objects.get(user=user)
+
+    if ad.birthday == None:
+        birth = ""
+    else:
+        birth = ad.birthday
+    content = {
+        "birthday": birth,
+        "country": ad.country,
+        "city": ad.city,
+        "street": ad.street,
+        "house_number": ad.house_number,
+        "house_block": ad.house_block,
+    }
+    return render(request, Names.profile_user, content)
+
+#ajax
+def profile_user_check(request):
+    if request.method == "GET":
+        error = False
+        birthday = request.GET.get("birthday", "")
+        country = request.GET.get("country", "")
+        city = request.GET.get("city", "")
+        street = request.GET.get("street", "")
+        house_number = request.GET.get("house_number", "")
+        house_block = request.GET.get("house_block", "")
+
+        birthday_ans = profile_birthday(birthday)
+        country_ans = profile_country(country)
+        city_ans = profile_city(city)
+        street_ans = profile_street(street)
+        house_number_ans = profile_house_number(house_number)
+        house_block_ans = profile_house_block(house_block)
+
+        user = User.objects.get(username=request.user)
+        try:
+            info = AdditionalUserInfo.objects.get(user=user)
+            if birthday_ans:
+                info.birthday = birthday
+            if country_ans:
+                info.country = country
+            if city_ans:
+                info.city = city
+            if street_ans:
+                info.street = street
+            if house_number_ans:
+                info.house_number = house_number
+            if house_block_ans:
+                info.house_block = house_block
+            info.save()
+            answer = "changes added"
+        except:
+            a = AdditionalUserInfo.objects.create(user=user, country=country, city=city,
+                                              street=street, house_number=house_number, house_block=house_block)
+            if birthday_ans:
+                a.birthday = birthday
+                a.save()
+            answer = "info created"
+
+        content = {
+            "answer": answer,
+        }
+
+
+    content = {}
+    return HttpResponse(json.dumps(content), content_type="application/json")

@@ -3,6 +3,8 @@ from my_settings import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
 SECRET_KEY = SECRET_KEY
 
 DEBUG = True
@@ -87,3 +89,8 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = 'media/'
+
+MEDIA_URL = "/media/"
+

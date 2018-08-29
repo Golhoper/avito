@@ -1,1 +1,48 @@
 {% extends 'user/index_profile.html' %}
+{% load staticfiles %}
+
+{% block content %}
+    <main role="main" class="container">
+        <h2 class="mt-5">Добавить/изменить данные пользователя</h2>
+        <table>
+            <tr>
+                <td align="right" width="150">День рождения: </td>
+                <td><input type="text" id="birthday" value="{{ birthday }}"></td>
+            </tr>
+            <tr>
+                <td align="right" width="150">Страна: </td>
+                <td><input type="text" id="country" value="{{ country }}"></td>
+            </tr>
+            <tr>
+                <td align="right" width="150">Город: </td>
+                <td><input type="text" id="city" value="{{ city }}"></td>
+            </tr>
+            <tr>
+                <td align="right" width="150">Улица: </td>
+                <td><input type="text" id="street" value="{{ street }}"></td>
+            </tr>
+            <tr>
+                <td align="right" width="150">Номер дома: </td>
+                <td><input type="text" id="house_number" value="{{ house_number }}"></td>
+            </tr>
+            <tr>
+                <td align="right" width="150">Корпус дома: </td>
+                <td><input type="text" id="house_block" value="{{ house_block }}"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input id="button_save" class="btn btn-primary btn-mdl" type="button" value="Сохранить изменения"></td>
+            </tr>
+        </table>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <span class="text-muted">Place sticky footer content here.</span>
+        </div>
+    </footer>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'js/profile.js' %}"></script>
+{% endblock %}
