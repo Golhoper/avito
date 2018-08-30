@@ -2,6 +2,7 @@ from Libraries import *
 from url_names import Names
 from user.functions import *
 from user.models import AdditionalUserInfo
+from .forms import ProfileForm
 
 
 def reg_user(request):
@@ -74,26 +75,44 @@ def logout_user(request):
 
 
 def profile_user(request):
-    user = User.objects.get(username=request.user)
-    try:
-        ad = AdditionalUserInfo.objects.get(user=user)
+    if request.method == "POST":
+        MyProfileForm = ProfileForm(request.POST, request.FILES)
+        if MyProfileForm.is_valid():
+            user = User.objects.get(username=request.user)
+            try:
+                profile = AdditionalUserInfo.objects.get(user=user)
+                profile.avatar = MyProfileForm.cleaned_data["picture"]
+                profile.save()
+            except:
+                profile = AdditionalUserInfo.objects.create(user=user,
+                                                            avatar=MyProfileForm.cleaned_data["picture"])
+            content = {
+                "answer": "Изображение сохранено"
+            }
+            return render(request, Names.profile_user)
+    else:
+        user = User.objects.get(username=request.user)
+        try:
+            ad = AdditionalUserInfo.objects.get(user=user)
 
-        if ad.birthday == None:
-            birth = ""
-        else:
-            birth = ad.birthday
-        content = {
-            "birthday": birth,
-            "country": ad.country,
-            "city": ad.city,
-            "street": ad.street,
-            "house_number": ad.house_number,
-            "house_block": ad.house_block,
-        }
-        return render(request, Names.profile_user, content)
-    except:
-        content = {}
-        return render(request, Names.profile_user, content)
+            if ad.birthday == None:
+                birth = ""
+            else:
+                birth = ad.birthday
+            content = {
+                "birthday": birth,
+                "country": ad.country,
+                "city": ad.city,
+                "street": ad.street,
+                "house_number": ad.house_number,
+                "house_block": ad.house_block,
+                "avatar": ad.avatar,
+            }
+
+            return render(request, Names.profile_user, content)
+        except:
+            content = {}
+            return render(request, Names.profile_user, content)
 
 
 #ajax
