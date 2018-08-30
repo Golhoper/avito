@@ -18,3 +18,5 @@ class AdditionalUserInfo(models.Model):
     street = models.TextField(blank=True)
     house_number = models.TextField(blank=True, help_text="Номер дома")
     house_block = models.TextField(blank=True, help_text="Корпус дома")
+    phone_mobile = models.CharField(max_length=10, blank=True)
+    metro = models.TextField(blank=True)

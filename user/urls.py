@@ -18,3 +18,4 @@ urlpatterns = [
     re_path('profile_delete/$', profile_user_delete, name="profile_delete"), #ajax
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

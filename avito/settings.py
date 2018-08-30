@@ -3,8 +3,6 @@ from my_settings import *
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
-
 SECRET_KEY = SECRET_KEY
 
 DEBUG = True
@@ -19,6 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user',
+    'ad',
 ]
 
 MIDDLEWARE = [
@@ -93,7 +92,8 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR,'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-MEDIA_URL = '/media/'
+MEDIA_URL = "/media/"
 
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
