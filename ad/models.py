@@ -1,3 +1,4 @@
+from Libraries import *
 from django.db import models
 
 
@@ -13,3 +14,4 @@ class Ad(models.Model):
     description = models.TextField(blank=False, null=False, default="no description")
     creation_date = models.DateTimeField(auto_now=True)
     price = models.PositiveIntegerField(default=0)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default="")

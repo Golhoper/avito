@@ -1,7 +1,5 @@
 from Libraries import *
 from user.views import *
-from django.conf import settings
-from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -17,5 +15,5 @@ urlpatterns = [
     re_path('profile_check/$', profile_user_check, name="profile_check"), #ajax
     re_path('profile_delete/$', profile_user_delete, name="profile_delete"), #ajax
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
