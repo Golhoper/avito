@@ -13,24 +13,37 @@ $("#button_save").click(function () {
         dataType: "text",
         cache: false,
         success: function (omg) {
-            console.log("gg");
-            // var ggwp = JSON.parse(omg);
-            // if (ggwp.login == "go to profile") {
-            //     head = "http://";
-            //     host = document.location.host;
-            //     go_to = "/user/profile/";
-            //     document.location.href = head + host + go_to;
-            // }
-            // if (ggwp.login == "empty") {
-            //     document.getElementById("logincheck").innerHTML = "<div id=\"logincheck\"> Пусто </div></i>";
-            // }
-            // else if (ggwp.login == "busy") {
-            //     document.getElementById("logincheck").innerHTML = "<div id=\"logincheck\"> Занят </div></i>";
-            // }
-            // else if (ggwp.login == "unknown") {
-            //     document.getElementById("logincheck").innerHTML = "<div id=\"logincheck\"> Ошибка введенного поля </div></i>";
-            // }
+            var ggwp = JSON.parse(omg);
+            alert(ggwp.answer);
+        }
+    });
+});
+$("#button_delete").click(function () {
+    $.ajax({
+        type: "GET",
+        url: "profile_delete/",
+        data: {
+            "birthday": $("#birthday").val(),
+            "country": $("#country").val(),
+            "city": $("#city").val(),
+            "street": $("#street").val(),
+            "house_number": $("#house_number").val(),
+            "house_block": $("#house_block").val(),
+        },
+        dataType: "text",
+        cache: false,
+        success: function (omg) {
+            var ggwp = JSON.parse(omg);
 
+            if (ggwp.answer == "deleted") {
+                document.getElementById("birthday").value = ""
+                document.getElementById("country").value = ""
+                document.getElementById("city").value = ""
+                document.getElementById("street").value = ""
+                document.getElementById("house_number").value = ""
+                document.getElementById("house_block").value = ""
+                alert("Ваши данные были удалены!")
+            }
         }
     });
 });

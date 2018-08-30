@@ -69,9 +69,10 @@ def error_log_pasw():
 
 def profile_birthday(birthday):
     try:
-        year, month, day = birthday.split('.')
+        year, month, day = birthday.split('-')
         datetime.datetime(int(year), int(month), int(day))
         birthday_ans = True
+        print(datetime.datetime(int(year), int(month), int(day)))
     except:
         birthday_ans = False
     return birthday_ans

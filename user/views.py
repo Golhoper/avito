@@ -44,6 +44,7 @@ def reg_check(request):
 def log_user(request):
     return render(request, Names.login)
 
+
 #ajax
 def log_check(request):
     if request.method == "GET":
@@ -74,26 +75,31 @@ def logout_user(request):
 
 def profile_user(request):
     user = User.objects.get(username=request.user)
-    ad = AdditionalUserInfo.objects.get(user=user)
+    try:
+        ad = AdditionalUserInfo.objects.get(user=user)
 
-    if ad.birthday == None:
-        birth = ""
-    else:
-        birth = ad.birthday
-    content = {
-        "birthday": birth,
-        "country": ad.country,
-        "city": ad.city,
-        "street": ad.street,
-        "house_number": ad.house_number,
-        "house_block": ad.house_block,
-    }
-    return render(request, Names.profile_user, content)
+        if ad.birthday == None:
+            birth = ""
+        else:
+            birth = ad.birthday
+        content = {
+            "birthday": birth,
+            "country": ad.country,
+            "city": ad.city,
+            "street": ad.street,
+            "house_number": ad.house_number,
+            "house_block": ad.house_block,
+        }
+        return render(request, Names.profile_user, content)
+    except:
+        content = {}
+        return render(request, Names.profile_user, content)
+
 
 #ajax
 def profile_user_check(request):
     if request.method == "GET":
-        error = False
+
         birthday = request.GET.get("birthday", "")
         country = request.GET.get("country", "")
         city = request.GET.get("city", "")
@@ -124,19 +130,31 @@ def profile_user_check(request):
             if house_block_ans:
                 info.house_block = house_block
             info.save()
-            answer = "changes added"
+            answer = "Данные были изменены!"
         except:
             a = AdditionalUserInfo.objects.create(user=user, country=country, city=city,
                                               street=street, house_number=house_number, house_block=house_block)
             if birthday_ans:
                 a.birthday = birthday
                 a.save()
-            answer = "info created"
+            answer = "Данные сохранены"
 
         content = {
             "answer": answer,
         }
+        return HttpResponse(json.dumps(content), content_type="application/json")
+
+    content = {
+        "answer": "Изменений не было"
+    }
+    return HttpResponse(json.dumps(content), content_type="application/json")
 
 
-    content = {}
+#ajax
+def profile_user_delete(request):
+    user = User.objects.get(username=request.user)
+    AdditionalUserInfo.objects.get(user=user).delete()
+    content = {
+        "answer": "deleted",
+    }
     return HttpResponse(json.dumps(content), content_type="application/json")
