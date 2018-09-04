@@ -8,3 +8,4 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 import json
 import datetime
+from django.core.paginator import Paginator

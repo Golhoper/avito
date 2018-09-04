@@ -10,6 +10,35 @@
     {% endblock %}
 </head>
 <body>
+    <ul class="nav bg-dark justify-content-center">
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'main' %}">На главную</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="">Авто</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="">Недвижимость</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="">Работа</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="">Услуги</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="">ещё...</a>
+        </li>
+        <li class="nav-item" >
+            <a class="nav-link" href="">Помощь</a>
+        </li>
+        {% if user.is_authenticated %}
+            <li class="nav-item" >
+                <a class="nav-link" href="{% url 'profile' %}">{{ user }}</a>
+            </li>
+        {% endif %}
+    </ul>
+
     {% block content %}
 
     {% endblock %}

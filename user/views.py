@@ -37,8 +37,9 @@ def reg_check(request):
             group = Group.objects.get(name='user')
             User.objects.get(username=login).groups.add(group)
             content = {
-                "login": "back to login",
+                "login": "back to login"
             }
+            print(content)
             return HttpResponse(json.dumps(content), content_type="application/json")
 
 

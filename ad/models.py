@@ -1,5 +1,6 @@
 from Libraries import *
 from django.db import models
+from user.models import AdditionalUserInfo
 
 
 class Ad(models.Model):

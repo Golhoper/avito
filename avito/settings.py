@@ -78,6 +78,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
