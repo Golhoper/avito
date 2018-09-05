@@ -53,7 +53,7 @@ def show_ad(request, id):
         "city": user_info.city,
         "metro": user_info.metro,
         "country": user_info.country,
-        "id": user.id,
+        "id": ad.user_id,
         "mes": mes_num,
     }
     return render(request, Names.show_ad , content)

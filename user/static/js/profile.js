@@ -32,6 +32,7 @@ $("#button_delete").click(function () {
         },
         dataType: "text",
         cache: false,
+
         success: function (omg) {
             var ggwp = JSON.parse(omg);
 
