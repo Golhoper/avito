@@ -9,6 +9,7 @@
     <ul style="list-style-type: none;">
         {% for ad in data %}
             <li>
+                <a href="{% url 'show_ad' ad.id %}"> Show</a>  <br>
                 {{ ad.id }}
                 {{ ad.title }} <br>
                 {{ ad.description|truncatechars:50 }} <br>

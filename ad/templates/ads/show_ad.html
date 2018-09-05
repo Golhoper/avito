@@ -1,0 +1,38 @@
+{% extends 'ads/index.html' %}
+{% load staticfiles %}
+
+{% block head %}
+    <title>Просмотр</title>
+{% endblock %}
+
+{% block content %}
+    <input type="text" style="visibility: hidden;"  value="{{ id }}" id="id">
+    <div class="container">
+        <div>
+            <div>{{ title }}</div>
+            <div>{{ description }}</div>
+        </div>
+        <div class="row">
+            <div class="col-4">Телефон: {{ phone }}</div>
+            <div class="col-4">Почта: {{ email }}</div>
+            <div class="col-4">Город: {{ city }}</div>
+        </div>
+        <input class="btn btn-dark" type="button" id="show_mes" onclick="show_element()" value="Связаться с продавцом">
+
+        <div style="visibility: hidden;" id="hiden_div">
+            <div class="container">
+                <input type="text" placeholder="Текст обращения" id="message">
+                <input class="btn btn-primary" type="button" value="Отправить" id="notify_seller">
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'js/show_ad.js' %}"></script>
+    <script>
+        function show_element() {
+            document.getElementById("hiden_div").style.visibility = 'visible';
+        }
+    </script>
+{% endblock %}

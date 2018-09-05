@@ -47,3 +47,20 @@ $("#button_delete").click(function () {
         }
     });
 });
+function read(id) {
+    read_gg(id);
+};
+function read_gg(id){
+    $ajax({
+        type: "GET",
+        url: "make_read/" + id,
+        data: {
+            "id": id,
+        },
+        dataType: "text",
+        cache: false,
+        success(omg) {
+            alert(omg);
+        }
+    });
+};

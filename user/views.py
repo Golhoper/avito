@@ -3,6 +3,7 @@ from url_names import Names
 from user.functions import *
 from user.models import AdditionalUserInfo
 from .forms import ProfileForm
+from user.models import Messages
 
 
 def reg_user(request):
@@ -95,6 +96,13 @@ def profile_user(request):
         user = User.objects.get(username=request.user)
         try:
             ad = AdditionalUserInfo.objects.get(user=user)
+            mes = Messages.objects.filter(to_whom_send=user, read_status=False)
+            if mes.count() > 0:
+                mes_num = mes.count()
+                mes_list = mes
+            else:
+                mes_num = 0
+                mes_list = ""
 
             if ad.birthday == None:
                 birth = ""
@@ -108,6 +116,8 @@ def profile_user(request):
                 "house_number": ad.house_number,
                 "house_block": ad.house_block,
                 "avatar": ad.avatar,
+                "mes": mes_num,
+                "mes_list": mes_list,
             }
 
             return render(request, Names.profile_user, content)
@@ -176,5 +186,12 @@ def profile_user_delete(request):
     AdditionalUserInfo.objects.get(user=user).delete()
     content = {
         "answer": "deleted",
+    }
+    return HttpResponse(json.dumps(content), content_type="application/json")
+
+
+def make_read(request, id):
+    content = {
+        "answer": 56,
     }
     return HttpResponse(json.dumps(content), content_type="application/json")

@@ -1,11 +1,13 @@
 from Libraries import *
 from url_names import Names
-from ad.models import Ad
 from django.views.decorators.cache import cache_page
 from django.core.cache import *
-from functools import lru_cache
 import time, redis
 from django.core.cache import caches
+#------------------------- models
+from ad.models import Ad
+from user.models import AdditionalUserInfo, Messages
+#-------------------------
 
 
 def add_ad(request):
@@ -13,28 +15,67 @@ def add_ad(request):
 
 
 def main(request):
-    # get_data_redis()
-    # test_data()
     num = 10
-    # time1 = time.time()
-    all = get_data(num)
-    # time2 = time.time()
-    # print(time2-time1)
-    # paginator = Paginator(all, 50)
+    all = Ad.objects.all()[:num]
 
-    # page = request.GET.get("page", 2)
-    # info = paginator.get_page(page)
-    content = {"data": all}
+    if request.user.is_authenticated:
+        user = User.objects.get(username=request.user)
+        mes = Messages.objects.filter(to_whom_send=user, read_status=False)
+        if mes.count() > 0:
+            mes_num = mes.count()
+        else:
+            mes_num = ""
+    content = {"data": all, "mes": mes_num}
     return render(request, Names.main, content)
 
 
-def test_data():
-    r = redis.StrictRedis(host='localhost', port=6379, db=1)
-    for x in range(100000):
-        id = json.loads(r.get("main" + str(x)).decode('utf-8').replace("'", '"')).get('id')
-        if id == 90000:
-            break
-    print(id)
+def show_ad(request, id):
+    ad = Ad.objects.get(id=id)
+    title = ad.title
+    description = ad.description
+    user = User.objects.get(id=ad.user_id)
+    ad_name = user.username
+    email = user.email
+    user_info = AdditionalUserInfo.objects.get(user_id=user.id)
+    if request.user.is_authenticated:
+        user = User.objects.get(username=request.user)
+        mes = Messages.objects.filter(to_whom_send=user, read_status=False)
+        if mes.count() > 0:
+            mes_num = mes.count()
+        else:
+            mes_num = ""
+    content = {
+        "title": title,
+        "description": description,
+        "ad_name": ad_name,
+        "email": email,
+        "phone": user_info.phone_mobile,
+        "city": user_info.city,
+        "metro": user_info.metro,
+        "country": user_info.country,
+        "id": user.id,
+        "mes": mes_num,
+    }
+    return render(request, Names.show_ad , content)
+
+
+#ajax
+def send_msg_seller(request):
+    if request.method == "GET":
+        message = request.GET.get("message", "")
+        if len(message) > 0:
+            id_whom = request.GET.get("id", "")
+            id_who = User.objects.get(username=request.user).id
+
+            m = Messages.objects.create(message=message, who_send=User.objects.get(id=id_who),
+                                        to_whom_send=User.objects.get(id=id_whom), read_status=False)
+
+            content = {"answer": "Message sent!"}
+            return HttpResponse(json.dumps(content), content_type="application/json")
+
+    content = {"answer": "stop"}
+    return HttpResponse(json.dumps(content), content_type="application/json")
+
 
 #ajax
 def add_ad_check(request):
@@ -68,23 +109,17 @@ def test_add(request):
     return redirect('main')
 
 
-def get_data(num):
-    # all = Ad.objects.all()[:num]
-    a = cache.get('lst')
-    if a is None:
-        alls = Ad.objects.all()[:num].values('id', 'title', 'description')
-        cache.set("lst", alls, 60)
-        # if cache.get("lst"):
-            # print("memcached created")
-    else:
-        alls = a
-        # print("from memcached")
-    # if a:
-    #     for x in a:
-    #         print(x.get("id"))
+def test_data():
+    r = redis.StrictRedis(host='localhost', port=6379, db=1)
+    for x in range(100000):
+        id = json.loads(r.get("main" + str(x)).decode('utf-8').replace("'", '"')).get('id')
+        if id == 90000:
+            break
+    print(id)
 
-    return alls
 
+'''
+tests
 
 def get_data_redis():
     num = 100000
@@ -115,3 +150,25 @@ def get_data_redis():
     # print("time redis: " + str(time2 - time1))
     # return data
     # r.flushall()
+    
+    
+def get_data(num):
+    # all = Ad.objects.all()[:num]
+    a = cache.get('lst')
+    if a is None:
+        alls = Ad.objects.all()[:num].values('id', 'title', 'description')
+        cache.set("lst", alls, 60)
+        # if cache.get("lst"):
+            # print("memcached created")
+    else:
+        alls = a
+        # print("from memcached")
+    # if a:
+    #     for x in a:
+    #         print(x.get("id"))
+
+    return alls
+'''
+
+
+

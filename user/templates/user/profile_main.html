@@ -4,12 +4,9 @@
 {% block content %}
     <main role="main" class="container">
         <h2 class="mt-5">Добавить/изменить данные пользователя</h2>
-        <table>
-
+        <table style="visibility: visible" id="add_user_info">
             <tr>
-                <td>
-                    <img src="media/{{ avatar }}" alt="nothing">
-                </td>
+                <td><img src="media/{{ avatar }}" alt="nothing"></td>
             </tr>
             <tr>
                 <td></td>
@@ -53,6 +50,14 @@
                 <td><input id="button_delete" class="btn btn-primary btn-mdl" type="button" value="Очистить данные"></td>
             </tr>
         </table>
+
+        {% if mes > 0 %}
+        <hr> <hr>
+            {% for m in mes_list %}
+                <input type="button" value="Прочитано" id="{{ m.id }}" onclick="read_gg({{ m.id }})"> <text> отправлено от {{ m.who_send }}: {{ m.message }}</text>
+                <hr>
+            {% endfor %}
+        {% endif %}
     </main>
 
     <footer class="footer">
