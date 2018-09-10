@@ -4,6 +4,7 @@ from django.views.decorators.cache import cache_page
 from django.core.cache import *
 import time, redis
 from django.core.cache import caches
+from django.core.paginator import Paginator
 #------------------------- models
 from ad.models import Ad
 from user.models import AdditionalUserInfo, Messages
@@ -15,9 +16,11 @@ def add_ad(request):
 
 
 def main(request):
-    num = 10
-    all = Ad.objects.all()[:num]
+    page = request.GET.get('page','')
 
+    all = Ad.objects.select_related('user').values('id', 'title','description', 'user__first_name', 'price').all()
+    paginator = Paginator(all, 10)
+    mes_num=""
     if request.user.is_authenticated:
         user = User.objects.get(username=request.user)
         mes = Messages.objects.filter(to_whom_send=user, read_status=False)
@@ -25,7 +28,7 @@ def main(request):
             mes_num = mes.count()
         else:
             mes_num = ""
-    content = {"data": all, "mes": mes_num}
+    content = {"data": paginator.get_page(page), "mes": mes_num}
     return render(request, Names.main, content)
 
 
@@ -105,11 +108,15 @@ def test_add(request):
     # for x in range(100000):
     #     Ad.objects.create(user=user, title="title",
     #                       description="description", price=1000)
-
+    ad = Ad.objects.filter(user_id=5).select_related('user')[:100]
+    for a in ad:
+        print(a.user.username)
     return redirect('main')
 
 
 def test_data():
+    gq = ""
+    wp = gq
     r = redis.StrictRedis(host='localhost', port=6379, db=1)
     for x in range(100000):
         id = json.loads(r.get("main" + str(x)).decode('utf-8').replace("'", '"')).get('id')

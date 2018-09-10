@@ -9,34 +9,35 @@
     <ul style="list-style-type: none;">
         {% for ad in data %}
             <li>
-                <a href="{% url 'show_ad' ad.id %}"> Show</a>  <br>
-                {{ ad.id }}
-                {{ ad.title }} <br>
-                {{ ad.description|truncatechars:50 }} <br>
-                {{ ad.price }}
+                <a href="{% url 'show_ad' ad.id %}"> Показать развернутое описание</a>  <br>
+                ID: {{ ad.id }} <br>
+                Загаловок: {{ ad.title }} <br>
+                Описание: {{ ad.description|truncatechars:50 }} <br>
+                Цена: {{ ad.price }} <br>
+                Автор: {{ ad.user__first_name }}
                 <hr>
             </li>
 
         {% endfor %}
     </ul>
 
-{#    <div class="pagination">#}
-{#        <span class="step-links">#}
-{#            {% if contacts.has_previous %}#}
-{#                <a href="?page=1">&laquo; first</a>#}
-{#                <a href="?page={{ contacts.previous_page_number }}">previous</a>#}
-{#            {% endif %}#}
-{##}
-{#            <span class="current">#}
-{#                Page {{ contacts.number }} of {{ contacts.paginator.num_pages }}.#}
-{#            </span>#}
-{##}
-{#            {% if contacts.has_next %}#}
-{#                <a href="?page={{ contacts.next_page_number }}">next</a>#}
-{#                <a href="?page={{ contacts.paginator.num_pages }}">last &raquo;</a>#}
-{#            {% endif %}#}
-{#        </span>#}
-{#    </div>#}
+    <div class="pagination">
+        <span class="step-links">
+            {% if data.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ data.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ data.number }} of {{ data.paginator.num_pages }}.
+            </span>
+
+            {% if data.has_next %}
+                <a href="?page={{ data.next_page_number }}">next</a>
+                <a href="?page={{ data.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 
 {% endblock %}
 
