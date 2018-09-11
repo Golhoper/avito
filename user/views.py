@@ -1,9 +1,9 @@
 from Libraries import *
 from url_names import Names
 from user.functions import *
-from user.models import AdditionalUserInfo
+from user.models import AdditionalUserInfo, Messages
 from .forms import ProfileForm
-from user.models import Messages
+from ad.models import Favourites
 
 
 def reg_user(request):
@@ -195,3 +195,22 @@ def make_read(request, id):
         "answer": 56,
     }
     return HttpResponse(json.dumps(content), content_type="application/json")
+
+
+def show_favourites(request):
+    user = User.objects.get(username=request.user)
+    favs = Favourites.objects.select_related('user', 'ad')\
+        .filter(user=user).values('ad__title', 'ad__description', 'ad__id')
+    return render(request, Names.favourites, {"favs": favs})
+
+
+def delete_fav(request):
+    id = request.GET.get('id', '')
+    print(id)
+    user = User.objects.get(username=request.user)
+    Favourites.objects.get(ad_id=id, user=user).delete()
+    answer = {
+        "answer": "Запись была удалена",
+    }
+    return HttpResponse(json.dumps(answer), content_type="application/json")
+

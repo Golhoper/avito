@@ -6,7 +6,7 @@ import time, redis
 from django.core.cache import caches
 from django.core.paginator import Paginator
 #------------------------- models
-from ad.models import Ad
+from ad.models import Ad, Category, Favourites
 from user.models import AdditionalUserInfo, Messages
 #-------------------------
 
@@ -17,9 +17,20 @@ def add_ad(request):
 
 def main(request):
     page = request.GET.get('page','')
+    category = request.GET.get('category', '')
+    list_cat = Category.objects.values('category')
+    flag = False
+    for ls in list_cat:
+        if ls.get('category').upper() == category.upper():
+            flag = True
+            break
 
-    all = Ad.objects.select_related('user').values('id', 'title','description', 'user__first_name', 'price').all()
-    paginator = Paginator(all, 10)
+    if not flag or category == '':
+        category = "General"
+    alls = Ad.objects.select_related('user', 'category').values('id', 'title','description',
+                                                               'user__first_name', 'price',
+                                                               'category__category').filter(category__category=category)
+    paginator = Paginator(alls, 10)
     mes_num=""
     if request.user.is_authenticated:
         user = User.objects.get(username=request.user)
@@ -28,18 +39,29 @@ def main(request):
             mes_num = mes.count()
         else:
             mes_num = ""
-    content = {"data": paginator.get_page(page), "mes": mes_num}
+    content = {"data": paginator.get_page(page), "mes": mes_num, "site": "http://127.0.0.1:8000/"}
     return render(request, Names.main, content)
+
+
+def avto(request):
+    category = "avto"
+    all = Ad.objects.select_related('user', 'category').values('id', 'title', 'description',
+                                                               'user__first_name', 'price',
+                                                               'category__category').filter(category__category=category)
 
 
 def show_ad(request, id):
     ad = Ad.objects.get(id=id)
+    date = ad.creation_date.date()
+    time = ad.creation_date.time()
     title = ad.title
     description = ad.description
     user = User.objects.get(id=ad.user_id)
     ad_name = user.username
     email = user.email
     user_info = AdditionalUserInfo.objects.get(user_id=user.id)
+    category = ad.category.category
+    price = ad.price
     if request.user.is_authenticated:
         user = User.objects.get(username=request.user)
         mes = Messages.objects.filter(to_whom_send=user, read_status=False)
@@ -56,8 +78,12 @@ def show_ad(request, id):
         "city": user_info.city,
         "metro": user_info.metro,
         "country": user_info.country,
-        "id": ad.user_id,
+        "id": ad.id,
         "mes": mes_num,
+        "category": category,
+        "date": date,
+        "time": time,
+        "price": price,
     }
     return render(request, Names.show_ad , content)
 
@@ -102,15 +128,32 @@ def add_ad_check(request):
         return HttpResponse(json.dumps(content), content_type="application/json")
 
 
+#ajax
+def make_favourite(request):
+    id_ad = request.GET.get('id', '')
+    if id_ad != '':
+        user = User.objects.get(username=request.user)
+        f = Favourites.objects.create(ad_id=id_ad, user=user)
+        answer = {"answer": "Объявление было добавлено!"}
+        return HttpResponse(json.dumps(answer), content_type="application/json")
+    else:
+        answer = {"answer": "Объявление не было найдено"}
+        return HttpResponse(json.dumps(answer), content_type="application/json")
+
 
 def test_add(request):
     # user = User.objects.get(username=request.user)
     # for x in range(100000):
     #     Ad.objects.create(user=user, title="title",
     #                       description="description", price=1000)
-    ad = Ad.objects.filter(user_id=5).select_related('user')[:100]
-    for a in ad:
-        print(a.user.username)
+    # ad = Ad.objects.filter(user_id=5).select_related('user')[:100]
+    # for a in ad:
+    #     print(a.user.username)
+    cat = Category.objects.get(pk=4)
+    for x in range(3001,4000):
+        ad = Ad.objects.get(id=x)
+        ad.category = cat
+        ad.save()
     return redirect('main')
 
 

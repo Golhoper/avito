@@ -9,8 +9,11 @@
     <input type="text" style="visibility: hidden;"  value="{{ id }}" id="id">
     <div class="container">
         <div>
-            <div>{{ title }}</div>
-            <div>{{ description }}</div>
+            <div>Размещено: {{ date }} в {{ time }}</div>
+            <div>Заголовок: {{ title }}</div>
+            <div>Описние: {{ description }}</div>
+            <div>Категория: {{ category }}</div>
+            <div>Цена: {{ price }}</div>
         </div>
         <div class="row">
             <div class="col-4">Телефон: {{ phone }}</div>
@@ -18,7 +21,7 @@
             <div class="col-4">Город: {{ city }}</div>
         </div>
         <input class="btn btn-dark" type="button" id="show_mes" onclick="show_element()" value="Связаться с продавцом">
-
+        <input class="btn btn-primary" type="button" id="favourites" value="Добавить в избранное">
         <div style="visibility: hidden;" id="hiden_div">
             <div class="container">
                 <input type="text" placeholder="Текст обращения" id="message">

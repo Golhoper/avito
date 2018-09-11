@@ -14,3 +14,18 @@ $("#notify_seller").click(function () {
         }
     });
 });
+$("#favourites").click(function () {
+    $.ajax({
+        type: "GET",
+        url: "make_favourite/",
+        data: {
+            "id": $("#id").val(),
+        },
+        dataType: "text",
+        cache: false,
+        success: function (omg) {
+            var ggwp = JSON.parse(omg);
+            alert(ggwp.answer);
+        }
+    });
+});

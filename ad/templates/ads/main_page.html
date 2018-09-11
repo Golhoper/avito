@@ -11,10 +11,11 @@
             <li>
                 <a href="{% url 'show_ad' ad.id %}"> Показать развернутое описание</a>  <br>
                 ID: {{ ad.id }} <br>
-                Загаловок: {{ ad.title }} <br>
+                Заголовок: {{ ad.title }} <br>
                 Описание: {{ ad.description|truncatechars:50 }} <br>
                 Цена: {{ ad.price }} <br>
-                Автор: {{ ad.user__first_name }}
+                Автор: {{ ad.user__first_name }} <br>
+                Категория: {{ ad.category__category }}
                 <hr>
             </li>
 

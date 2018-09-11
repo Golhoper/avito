@@ -14,6 +14,9 @@ urlpatterns = [
     path('profile/', profile_user, name="profile"),
     re_path('profile_check/$', profile_user_check, name="profile_check"), #ajax
     re_path('profile_delete/$', profile_user_delete, name="profile_delete"), #ajax
-    re_path('make_read/(?P<id>\w+)/$', make_read, name="make_read")
+    re_path('make_read/(?P<id>\w+)/$', make_read, name="make_read"),
+    path('show_favourites/', show_favourites, name="show_favourites"),
+    re_path('delete_fav/$',delete_fav, name="delete_fav"), #ajax
+
 ]
 

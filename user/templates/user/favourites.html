@@ -1,0 +1,27 @@
+{% extends 'user/index_profile.html' %}
+{% load staticfiles %}
+
+{% block head %}
+    <title>Избранные</title>
+{% endblock %}
+
+{% block content %}
+    <main role="main" class="container">
+        <div>
+            {% for fav in favs %}
+                <div id="{{ fav.ad__id }}">
+                    {{ fav.ad__id }} <br>
+                    {{ fav.ad__title }} <br>
+                    {{ fav.ad__description }} <br>
+                    <a class="btn btn-primary" href="{% url 'show_ad' fav.ad__id %}">Показать</a>
+                    <input type="button" value="Убрать из избранных" onclick="open_ajax({{ fav.ad__id }})">
+                    <hr>
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'js/favourites.js' %}"></script>
+{% endblock %}
