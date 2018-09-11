@@ -4,6 +4,7 @@ from user.functions import *
 from user.models import AdditionalUserInfo, Messages
 from .forms import ProfileForm
 from ad.models import Favourites
+from django.contrib.auth.decorators import login_required
 
 
 def reg_user(request):
@@ -190,11 +191,15 @@ def profile_user_delete(request):
     return HttpResponse(json.dumps(content), content_type="application/json")
 
 
-def make_read(request, id):
-    content = {
-        "answer": 56,
-    }
-    return HttpResponse(json.dumps(content), content_type="application/json")
+#ajax
+@login_required(redirect_field_name='main')
+def read_mes(request):
+    id=request.GET.get('id', '')
+    m = Messages.objects.get(id=id)
+    m.read_status = True
+    m.save()
+    answer = {"answer": "Прочитано"}
+    return HttpResponse(json.dumps(answer), content_type="application/json")
 
 
 def show_favourites(request):

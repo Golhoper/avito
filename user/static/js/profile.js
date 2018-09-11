@@ -48,3 +48,17 @@ $("#button_delete").click(function () {
         }
     });
 });
+function read(id) {
+    $.ajax({
+        type: "GET",
+        url: "read_mes/",
+        data: {
+             "id": id,
+            },
+        dataType: "text",
+        cache: false,
+        success: function (omg) {
+            document.getElementById(id).remove();
+        }
+    });
+};

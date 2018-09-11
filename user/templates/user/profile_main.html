@@ -54,8 +54,11 @@
         {% if mes > 0 %}
         <hr> <hr>
             {% for m in mes_list %}
-                <input type="button" value="Прочитано" id="{{ m.id }}" onclick="read_gg({{ m.id }})"> <text> отправлено от {{ m.who_send }}: {{ m.message }}</text>
-                <hr>
+                <div id="{{ m.id }}">
+                    <input type="button" value="Прочитано" onclick="read({{ m.id }})">
+                    <text> отправлено от {{ m.who_send }}: {{ m.message }}</text>
+                    <hr>
+                </div>
             {% endfor %}
         {% endif %}
     </main>
