@@ -3,8 +3,6 @@ from url_names import Names
 from django.views.decorators.cache import cache_page
 from django.core.cache import *
 import time, redis
-from django.core.cache import caches
-from django.core.paginator import Paginator
 #------------------------- models
 from ad.models import Ad, Category, Favourites
 from user.models import AdditionalUserInfo, Messages
@@ -20,6 +18,7 @@ def main(request):
     category = request.GET.get('category', '')
     list_cat = Category.objects.values('category')
     flag = False
+
     for ls in list_cat:
         if ls.get('category').upper() == category.upper():
             flag = True
@@ -30,6 +29,7 @@ def main(request):
     alls = Ad.objects.select_related('user', 'category').values('id', 'title','description',
                                                                'user__first_name', 'price',
                                                                'category__category').filter(category__category=category)
+
     paginator = Paginator(alls, 10)
     mes_num=""
     if request.user.is_authenticated:
@@ -39,15 +39,8 @@ def main(request):
             mes_num = mes.count()
         else:
             mes_num = ""
-    content = {"data": paginator.get_page(page), "mes": mes_num, "site": "http://127.0.0.1:8000/"}
+    content = {"data": paginator.get_page(page), "mes": mes_num}
     return render(request, Names.main, content)
-
-
-def avto(request):
-    category = "avto"
-    all = Ad.objects.select_related('user', 'category').values('id', 'title', 'description',
-                                                               'user__first_name', 'price',
-                                                               'category__category').filter(category__category=category)
 
 
 def show_ad(request, id):
@@ -69,6 +62,8 @@ def show_ad(request, id):
             mes_num = mes.count()
         else:
             mes_num = ""
+    else:
+        mes_num=""
     content = {
         "title": title,
         "description": description,
@@ -142,18 +137,19 @@ def make_favourite(request):
 
 
 def test_add(request):
-    # user = User.objects.get(username=request.user)
-    # for x in range(100000):
-    #     Ad.objects.create(user=user, title="title",
-    #                       description="description", price=1000)
+    user = User.objects.get(username=request.user)
+    for x in range(16000000):
+        Ad.objects.create(user=user, title="tilt",
+                          description="ezpzlemonsqeezy", price=5000)
+    print(x)
     # ad = Ad.objects.filter(user_id=5).select_related('user')[:100]
     # for a in ad:
     #     print(a.user.username)
-    cat = Category.objects.get(pk=4)
-    for x in range(3001,4000):
-        ad = Ad.objects.get(id=x)
-        ad.category = cat
-        ad.save()
+    # cat = Category.objects.get(pk=4)
+    # for x in range(3001,4000):
+    #     ad = Ad.objects.get(id=x)
+    #     ad.category = cat
+    #     ad.save()
     return redirect('main')
 
 
@@ -161,10 +157,9 @@ def test_data():
     gq = ""
     wp = gq
     r = redis.StrictRedis(host='localhost', port=6379, db=1)
-    for x in range(100000):
+    for x in range(1000000):
         id = json.loads(r.get("main" + str(x)).decode('utf-8').replace("'", '"')).get('id')
-        if id == 90000:
-            break
+
     print(id)
 
 

@@ -20,7 +20,7 @@ class Ad(models.Model):
         verbose_name = "ad"
         verbose_name_plural = "ad_pl"
         required_db_vendor = "mysql"
-        ordering = ['creation_date']
+        # ordering = ['creation_date']
 
     id = models.AutoField(primary_key=True)
     title = models.TextField(blank=False, null=False, default="No title")
@@ -43,3 +43,4 @@ class Favourites(models.Model):
     ad = models.ForeignKey(Ad, on_delete=models.CASCADE)
     creation_date = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
