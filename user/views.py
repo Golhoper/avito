@@ -116,7 +116,7 @@ def profile_user(request):
                 "street": ad.street,
                 "house_number": ad.house_number,
                 "house_block": ad.house_block,
-                "avatar": ad.avatar,
+                "avatar": ad,
                 "mes": mes_num,
                 "mes_list": mes_list,
             }

@@ -28,7 +28,7 @@ def main(request):
         category = "General"
     alls = Ad.objects.select_related('user', 'category').values('id', 'title','description',
                                                                'user__first_name', 'price',
-                                                               'category__category').filter(category__category=category)
+                                                               'category__category').filter(category__category=category)[:1000]
 
     paginator = Paginator(alls, 10)
     mes_num=""
