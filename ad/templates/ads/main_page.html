@@ -9,6 +9,7 @@
     <ul style="list-style-type: none;">
         {% for ad in data %}
             <li>
+                <img src="media/{{ ad.img }}" style="width: 100px;height: 100px;" alt="nothing"> <br>
                 <a href="{% url 'show_ad' ad.id %}"> Показать развернутое описание</a>  <br>
                 ID: {{ ad.id }} <br>
                 Заголовок: {{ ad.title }} <br>
@@ -25,8 +26,13 @@
     <div class="pagination">
         <span class="step-links">
             {% if data.has_previous %}
-                <a href="?page=1">&laquo; first</a>
-                <a href="?page={{ data.previous_page_number }}">previous</a>
+                {% if search %}
+                    <a href="?page=1&search={{ search }}">&laquo; first</a>
+                    <a href="?page={{ data.previous_page_number }}&search={{ search }}">previous</a>
+                {% else %}
+                    <a href="?page=1&category={{ category }}">&laquo; first</a>
+                    <a href="?page={{ data.previous_page_number }}&category={{ category }}">previous</a>
+                {% endif %}
             {% endif %}
 
             <span class="current">
@@ -34,8 +40,13 @@
             </span>
 
             {% if data.has_next %}
-                <a href="?page={{ data.next_page_number }}">next</a>
-                <a href="?page={{ data.paginator.num_pages }}">last &raquo;</a>
+                {% if search %}
+                    <a href="?page={{ data.next_page_number }}&search={{ search }}">next</a>
+                    <a href="?page={{ data.paginator.num_pages }}&search={{ search }}">last &raquo;</a>
+                {% else %}
+                    <a href="?page={{ data.next_page_number }}&category={{ category }}">next</a>
+                    <a href="?page={{ data.paginator.num_pages }}&category={{ category }}">last &raquo;</a>
+                {% endif %}
             {% endif %}
         </span>
     </div>

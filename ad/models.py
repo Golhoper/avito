@@ -29,6 +29,7 @@ class Ad(models.Model):
     price = models.PositiveIntegerField(default=0)
     user = models.ForeignKey(User, on_delete=models.CASCADE, default="")
     category = models.ForeignKey(Category, models.SET_NULL, blank=False, null=True, default=5)
+    img = models.ImageField(upload_to="users/ad/", blank=True)
 
 
 class Favourites(models.Model):

@@ -14,8 +14,11 @@ def add_ad(request):
 
 
 def main(request):
-    page = request.GET.get('page','')
+    page = request.GET.get('page','1')
+    if int(page) > 100:
+        return redirect('main')
     category = request.GET.get('category', '')
+    search = request.GET.get('search', '')
     list_cat = Category.objects.values('category')
     flag = False
 
@@ -26,10 +29,17 @@ def main(request):
 
     if not flag or category == '':
         category = "General"
-    alls = Ad.objects.select_related('user', 'category').values('id', 'title','description',
+    if search == "":
+        alls = Ad.objects.select_related('user',
+                                         'category').values('id', 'title','description',
                                                                'user__first_name', 'price',
-                                                               'category__category').filter(category__category=category)[:1000]
-
+                                                               'category__category', 'img').filter(category__category=category)[:1000]
+    else:
+        alls = Ad.objects.select_related('user',
+                                         'category').values('id', 'title','description',
+                                                               'user__first_name', 'price',
+                                                               'category__category', 'img').filter(title__contains=search,
+                                                                                                   description__contains=search)[:1000]
     paginator = Paginator(alls, 10)
     mes_num=""
     if request.user.is_authenticated:
@@ -39,7 +49,8 @@ def main(request):
             mes_num = mes.count()
         else:
             mes_num = ""
-    content = {"data": paginator.get_page(page), "mes": mes_num}
+
+    content = {"data": paginator.get_page(page), "category":category,"mes": mes_num, "search": search}
     return render(request, Names.main, content)
 
 
@@ -137,11 +148,20 @@ def make_favourite(request):
 
 
 def test_add(request):
-    user = User.objects.get(username=request.user)
-    for x in range(16000000):
-        Ad.objects.create(user=user, title="tilt",
-                          description="ezpzlemonsqeezy", price=5000)
-    print(x)
+    ad = Ad.objects.filter(id__lt = 1000000)
+    y = 0
+    for x in ad:
+        if y == 5:
+            y = 0
+        y += 1
+        x.category_id = y
+        x.save()
+    return redirect('main')
+    # user = User.objects.get(username=request.user)
+    # for x in range(16000000):
+    #     Ad.objects.create(user=user, title="tilt",
+    #                       description="ezpzlemonsqeezy", price=5000)
+    # print(x)
     # ad = Ad.objects.filter(user_id=5).select_related('user')[:100]
     # for a in ad:
     #     print(a.user.username)
@@ -154,13 +174,17 @@ def test_add(request):
 
 
 def test_data():
-    gq = ""
-    wp = gq
-    r = redis.StrictRedis(host='localhost', port=6379, db=1)
-    for x in range(1000000):
-        id = json.loads(r.get("main" + str(x)).decode('utf-8').replace("'", '"')).get('id')
-
-    print(id)
+    ad = Ad.objects.all()
+    for x in ad:
+        x.img="users/avatars/logo-ubuntu.png"
+        x.save()
+    # gq = ""
+    # wp = gq
+    # r = redis.StrictRedis(host='localhost', port=6379, db=1)
+    # for x in range(1000000):
+    #     id = json.loads(r.get("main" + str(x)).decode('utf-8').replace("'", '"')).get('id')
+    #
+    # print(id)
 
 
 '''
