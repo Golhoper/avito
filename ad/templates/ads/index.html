@@ -37,14 +37,17 @@
         {% endif %}
     </ul>
 
-    <div class="container">
-        <div class="input-group mb-3 m-3">
-            <input type="text" class="form-control" aria-label="text input with segmented dropdown">
-            <div class="input-group-append">
-                <button type="button" class="btn btn-outline-secondary">Search</button>
+    <form action="{% url 'main' %}">
+        <div class="container">
+            <div class="input-group mb-3 m-3">
+                <input type="text" class="form-control" name="search">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-outline-secondary">Search</button>
+                </div>
             </div>
         </div>
-    </div>
+
+    </form>
 
     {% block content %}
 

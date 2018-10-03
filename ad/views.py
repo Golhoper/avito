@@ -29,18 +29,28 @@ def main(request):
 
     if not flag or category == '':
         category = "General"
-    if search == "":
+    if search == "" and category != "":
         alls = Ad.objects.select_related('user',
                                          'category').values('id', 'title','description',
                                                                'user__first_name', 'price',
                                                                'category__category', 'img').filter(category__category=category)[:1000]
     else:
-        alls = Ad.objects.select_related('user',
-                                         'category').values('id', 'title','description',
-                                                               'user__first_name', 'price',
-                                                               'category__category', 'img').filter(title__contains=search,
-                                                                                                   description__contains=search)[:1000]
+        alls = Category.objects.raw('''select t1.id, t1.title, t1.description, t1.price, t1.img,
+                                        c.category as category__category, 
+                                        u.first_name as user__first_name
+                                    from (select * from avito.ad as a where a.title like %s limit 1000) as t1 
+                                    inner join avito.category as c on t1.category_id = c.id
+                                    inner join avito.auth_user as u on t1.user_id = u.id
+                                    ORDER by t1.id asc ;''', [search])
+        # alls = Category.objects.raw('''select t1.id, t1.title, t1.description, t1.price, t1.img,
+        #                                 c.category as category__category,
+        #                                 u.first_name as user__first_name
+        #                             from (select * from avito.ad as a where a.title like %s limit 1000) as t1
+        #                             inner join avito.category as c on t1.category_id = c.id
+        #                             inner join avito.auth_user as u on t1.user_id = u.id
+        #                             ORDER by t1.id asc ;''', [search])
     paginator = Paginator(alls, 10)
+
     mes_num=""
     if request.user.is_authenticated:
         user = User.objects.get(username=request.user)
@@ -49,8 +59,9 @@ def main(request):
             mes_num = mes.count()
         else:
             mes_num = ""
-
+    print(2)
     content = {"data": paginator.get_page(page), "category":category,"mes": mes_num, "search": search}
+
     return render(request, Names.main, content)
 
 
