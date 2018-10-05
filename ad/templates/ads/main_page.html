@@ -27,8 +27,8 @@
         <span class="step-links">
             {% if data.has_previous %}
                 {% if search %}
-                    <a href="?page=1&search={{ search }}">&laquo; first</a>
-                    <a href="?page={{ data.previous_page_number }}&search={{ search }}">previous</a>
+                    <a href="?page=1&search={{ search }}&price_from={{ price_from }}&price_to={{ price_to }}">&laquo; first</a>
+                    <a href="?page={{ data.previous_page_number }}&search={{ search }}&price_from={{ price_from }}&price_to={{ price_to }}">previous</a>
                 {% else %}
                     <a href="?page=1&category={{ category }}">&laquo; first</a>
                     <a href="?page={{ data.previous_page_number }}&category={{ category }}">previous</a>
@@ -41,8 +41,8 @@
 
             {% if data.has_next %}
                 {% if search %}
-                    <a href="?page={{ data.next_page_number }}&search={{ search }}">next</a>
-                    <a href="?page={{ data.paginator.num_pages }}&search={{ search }}">last &raquo;</a>
+                    <a href="?page={{ data.next_page_number }}&search={{ search }}&price_from={{ price_from }}&price_to={{ price_to }}">next</a>
+                    <a href="?page={{ data.paginator.num_pages }}&search={{ search }}&price_from={{ price_from }}&price_to={{ price_to }}">last &raquo;</a>
                 {% else %}
                     <a href="?page={{ data.next_page_number }}&category={{ category }}">next</a>
                     <a href="?page={{ data.paginator.num_pages }}&category={{ category }}">last &raquo;</a>

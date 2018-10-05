@@ -45,3 +45,15 @@ class Favourites(models.Model):
     creation_date = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+
+# class temp_ad(models.Model):
+#     class Meta:
+#         abstract = True
+#
+#     title = models.TextField(blank=False, null=False, default="No title")
+#     description = models.TextField(blank=False, null=False, default="no description")
+#     creation_date = models.DateTimeField(auto_now=True)
+#     price = models.PositiveIntegerField(default=0)
+#     user = models.PositiveSmallIntegerField(blank=True)
+#     category = models.PositiveSmallIntegerField(blank=True)
+#     img = models.TextField()

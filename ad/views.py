@@ -1,10 +1,7 @@
 from Libraries import *
-from url_names import Names
-from django.views.decorators.cache import cache_page
-from django.core.cache import *
-import time, redis
-#------------------------- models
+# ------------------------- models
 from ad.models import Ad, Category, Favourites
+from url_names import Names
 from user.models import AdditionalUserInfo, Messages
 #-------------------------
 
@@ -15,6 +12,8 @@ def add_ad(request):
 
 def main(request):
     page = request.GET.get('page','1')
+    price_from = request.GET.get('price_from', 0)
+    price_to = request.GET.get('price_to', 9999999)
     if int(page) > 100:
         return redirect('main')
     category = request.GET.get('category', '')
@@ -36,19 +35,18 @@ def main(request):
                                                                'category__category', 'img').filter(category__category=category)[:1000]
     else:
         alls = Category.objects.raw('''select t1.id, t1.title, t1.description, t1.price, t1.img,
-                                        c.category as category__category, 
+                                        c.category as category__category,
                                         u.first_name as user__first_name
-                                    from (select * from avito.ad as a where a.title like %s limit 1000) as t1 
+                                    from (select * from avito.ad as a 
+                                            where (a.title like %s 
+                                            or a.description like %s) 
+                                            and a.price between %s and %s 
+                                            limit 1000) as t1
                                     inner join avito.category as c on t1.category_id = c.id
                                     inner join avito.auth_user as u on t1.user_id = u.id
-                                    ORDER by t1.id asc ;''', [search])
-        # alls = Category.objects.raw('''select t1.id, t1.title, t1.description, t1.price, t1.img,
-        #                                 c.category as category__category,
-        #                                 u.first_name as user__first_name
-        #                             from (select * from avito.ad as a where a.title like %s limit 1000) as t1
-        #                             inner join avito.category as c on t1.category_id = c.id
-        #                             inner join avito.auth_user as u on t1.user_id = u.id
-        #                             ORDER by t1.id asc ;''', [search])
+                                    ORDER by t1.id asc ;''', ["%" + search + "%", "%" + search + "%",
+                                                              price_from, price_to])
+
     paginator = Paginator(alls, 10)
 
     mes_num=""
@@ -59,8 +57,13 @@ def main(request):
             mes_num = mes.count()
         else:
             mes_num = ""
-    print(2)
-    content = {"data": paginator.get_page(page), "category":category,"mes": mes_num, "search": search}
+
+    content = {"data": paginator.get_page(page),
+               "category":category,
+               "mes": mes_num,
+               "search": search,
+               "price_from": price_from,
+               "price_to": price_to}
 
     return render(request, Names.main, content)
 
@@ -110,7 +113,7 @@ def send_msg_seller(request):
     if request.method == "GET":
         message = request.GET.get("message", "")
         if len(message) > 0:
-            id_whom = request.GET.get("id", "")
+            id_whom = Ad.objects.get(id=request.GET.get("id", "")).user_id
             id_who = User.objects.get(username=request.user).id
 
             m = Messages.objects.create(message=message, who_send=User.objects.get(id=id_who),
