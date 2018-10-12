@@ -7,8 +7,8 @@
 
 {% block content %}
     <body class="text-center">
-        <form class="form-signin" method="post">
-        {% csrf_token %}
+        <div class="form-signin" >
+
             <h1 class="h3 mb-3 font-weight-normal">Регистрация</h1>
 
             <input class="form-control" placeholder="Имя" name="first_name" id="first_name">
@@ -17,15 +17,18 @@
             <div id="logincheck"></div>
 
             <input class="form-control" type="password" placeholder="Придумайте пароль" name="password" id="password">
-            <input class="form-control" type="password" placeholder="Повторите пароль" name="password_r" id="password_r">
+            <input class="form-control" type="password" placeholder="Повторите пароль" name="password_r"
+                   id="password_r">
             <div id="passwordcheck"></div>
             <input class="form-control" placeholder="Напишите электронную потчу" name="email" id="email">
             <div id="emailcheck"></div>
+            <a href="{% url 'login' %}">login</a>
+            <div class="">
+                <button class="btn btn-lg btn-primary btn-block" id="check_name_button">Registration</button>
+            </div>
             <p class="mt-5 mb-3 text-muted">© 2017-2018</p>
-        </form>
-        <div class="col-2">
-            <button class="btn btn-lg btn-primary btn-block" id="check_name_button">ajax</button>
         </div>
+
     </body>
 
 {% endblock %}
